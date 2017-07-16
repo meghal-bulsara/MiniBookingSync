@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  start_date: 2017-07-16 15:20:45
+  end_date: 2017-07-16 15:20:45
+  user_id: 1
+  price: 1.5
+  booking_no: MyString
+  rental_id: 1
+
+two:
+  start_date: 2017-07-16 15:20:45
+  end_date: 2017-07-16 15:20:45
+  user_id: 1
+  price: 1.5
+  booking_no: MyString
+  rental_id: 1

@@ -12,9 +12,25 @@ class Booking < ApplicationRecord
   #callback 
   before_validation :generate_detail
 
+  # generate booking no and check condition
+  def generate_random_string
+    prefix = Array.new(3){[*"A".."Z"].sample}.join
+    if prefix == 'EKA'
+      generate_random_string
+    end
+    return prefix
+  end
+
   def generate_detail
+    prefix_string = generate_random_string
+    postfix_string = Array.new(3){[*"A".."Z", *"0".."9"].sample}.join
+    final_string= "#{prefix_string}#{postfix_string}"
+    reserved_words = ["SELFIE", "BARNEY", "RACHEL", "MONICA", "ETIHAD", "AMAZON"]
+    if reserved_words.include?(final_string)
+      generate_detail
+    end
+    self.booking_no = final_string
     self.price = 100
-    self.booking_no = "DCT-#{Random.rand(1000)}"
   end
 
   # custom validation for start and end date 
@@ -28,10 +44,17 @@ class Booking < ApplicationRecord
 
   # custom validation for start date greater than or equal to today's date
   def start_date_validation
-    if !start_date.nil?
+    if !self.start_date.nil?
       if self.start_date < Date.today
         self.errors.add(:start_date, "Start date should be greater than or equal to today's date.")
       end
+    end
+  end
+
+  # custom validation for date overlapping
+  def check_for_date_overlap
+    if !self.start_date.nil? && !self.end_date.nil?
+      Booking.where('(start_date >= ? AND end_date <= ?) OR (start_date >= ? AND end_date <= ?)', self.start_date, self.start_date, self.end_date, self.end_date)
     end
   end
 

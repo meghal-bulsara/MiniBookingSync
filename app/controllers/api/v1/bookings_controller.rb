@@ -11,7 +11,6 @@ class Api::V1::BookingsController < Api::V1::ApiController
   def create
     @booking = Booking.new(booking_params)
     @booking.user_id = @user.id
-    binding.pry
     @booking.save
   end
 

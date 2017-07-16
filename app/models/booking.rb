@@ -5,14 +5,22 @@ class Booking < ApplicationRecord
 
   #validation
   validates_presence_of :start_date, :end_date, :price, :rental_id, :user_id, :booking_no
-  validates_uniqness_of :booking_no
+  validates_uniqueness_of :booking_no
   validates_numericality_of :user_id, :rental_id, :price, greater_than: 0
   validate :date_check_validation
+
+  #callback 
+  before_validation :generate_detail
+
+  def generate_detail
+    self.price = 100
+    self.booking_no = "DCT-#{Random.rand(1000)}"
+  end
 
   # custom validation for start and end date 
   def date_check_validation
     if !self.start_date.nil? && !self.end_date.nil?
-      if self.start_date < self.end_date
+      if self.end_date < self.start_date
         self.errors.add(:end_date, "End date should be greater than or equal to start date")
       end
     end

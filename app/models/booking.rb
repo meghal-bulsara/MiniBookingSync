@@ -10,7 +10,8 @@ class Booking < ApplicationRecord
   validate :date_check_validation
 
   #callback 
-  before_validation :generate_detail
+  before_validation :generate_detail, on: :create
+  before_validation :price_calculation
 
   # generate booking no and check condition
   def generate_random_string
@@ -30,7 +31,18 @@ class Booking < ApplicationRecord
       generate_detail
     end
     self.booking_no = final_string
-    self.price = 100
+  end
+
+  #price calculation
+  def price_calculation
+    # convert seconds to days
+    days = (self.end_date - self.start_date) / (24 * 60 * 60)
+    if days == 0
+      self.price = self.rental.daily_rate
+    else
+      self.price = days * self.rental.daily_rate
+    end
+    
   end
 
   # custom validation for start and end date 

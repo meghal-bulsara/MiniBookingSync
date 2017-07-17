@@ -4,11 +4,11 @@ if @booking.valid?
   child @user do
     attributes :email
   end
-  node(:status) {"200"}
+  node(:status) {200}
   node(:success) {"true"}
   node(:message) {"Successfully Created #{@booking.booking_no}" }
 else
-  node(:status) {"500"}
+  node(:status) {500}
   node(:success) {"false"}
   node(:message) {@booking.errors.full_messages}
 end

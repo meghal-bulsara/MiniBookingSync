@@ -7,9 +7,9 @@ class Booking < ApplicationRecord
   validates_presence_of :start_date, :end_date, :price, :rental_id, :user_id, :booking_no
   validates_uniqueness_of :booking_no
   validates_numericality_of :user_id, :rental_id, :price, greater_than: 0
-  validate :date_check_validation
+  validate :date_check_validation, :start_date_validation, :check_for_date_overlap
 
-  #callback 
+  #callback
   before_validation :generate_detail, on: :create
   before_validation :price_calculation
 
@@ -36,16 +36,17 @@ class Booking < ApplicationRecord
   #price calculation
   def price_calculation
     # convert seconds to days
-    days = (self.end_date - self.start_date) / (24 * 60 * 60)
-    if days == 0
-      self.price = self.rental.daily_rate
-    else
-      self.price = days * self.rental.daily_rate
+    if !self.start_date.nil? && !self.end_date.nil? && !self.rental_id.nil?
+      days = (self.end_date - self.start_date) / (24 * 60 * 60)
+      if days == 0
+        self.price = self.rental.daily_rate
+      else
+        self.price = days * self.rental.daily_rate
+      end
     end
-    
   end
 
-  # custom validation for start and end date 
+  # custom validation for start and end date
   def date_check_validation
     if !self.start_date.nil? && !self.end_date.nil?
       if self.end_date < self.start_date
@@ -66,7 +67,9 @@ class Booking < ApplicationRecord
   # custom validation for date overlapping
   def check_for_date_overlap
     if !self.start_date.nil? && !self.end_date.nil?
-      Booking.where('(start_date >= ? AND end_date <= ?) OR (start_date >= ? AND end_date <= ?)', self.start_date, self.start_date, self.end_date, self.end_date)
+      if Booking.where('start_date >= ? AND end_date <= ? AND rental_id = ?', self.start_date, self.end_date, self.rental_id).count > 0
+        self.errors.add(:start_date, "date overlapping")
+      end
     end
   end
 

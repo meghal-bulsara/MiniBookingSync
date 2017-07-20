@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>API CHECK</title>
+</head>
+<body>
+<form action="/" id="form">
+  <input type="submit" value="Show All Bookings" id="booking">
+</form>
+
+
+<table border="1" id="result">
+  <thead>
+    <tr>
+      <th>Booking No</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody id="resultBody">
+  </tbody>
+</table>
+
+<script>
+  var submitRentalHandle = document.getElementById('rental');
+  var submitBookingHandle = document.getElementById('booking');
+  var resultHandle = document.getElementById('resultBody');
+  var formHandle = document.getElementById('form');
+
+  function performAjax(){
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', "http://localhost:3000/api/v1/bookings?api_key=1771947ba168d819d4385493f3d52fb8")
+
+    //function
+    xhr.onreadystatechange = function(){
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        var response = JSON.parse(xhr.responseText);
+        var results = response.object
+        console.log(results.length)
+        for(var i = 0; i < results.length; i++)
+        {
+          // resultHandle.innerHTML += "start_date - " + results[i].start_date + " end_date - " + results[i].end_date + " booking no - " + results[i].booking_no + "<br/>"
+          resultHandle.innerHTML += "<tr><td>" + results[i].booking_no + "</td><td>" + results[i].start_date + "</td><td>" + results[i].end_date + "</td><td>" + results[i].price + "</td></tr>"
+        }
+      }
+    };
+    xhr.send()
+  }
+
+  formHandle.onsubmit = function(e){
+    e.preventDefault();
+    performAjax();
+  }
+
+</script>
+</body>
+</html>

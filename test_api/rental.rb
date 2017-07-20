@@ -30,6 +30,7 @@ class Rental
   end
 
   def self.update_test
+    index_test
     puts "Enter id for updating rental"
     id = gets.to_i
 
@@ -46,6 +47,7 @@ class Rental
   end
 
   def self.delete_test
+    index_test
     puts "Enter id for destroy rental"
     id = gets.to_i
 
@@ -56,6 +58,7 @@ class Rental
   end
 
   def self.show_test
+    index_test
     puts "Enter id for find rental"
     id = gets.to_i
 

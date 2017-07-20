@@ -67,7 +67,10 @@ class Booking < ApplicationRecord
   # custom validation for date overlapping
   def check_for_date_overlap
     if !self.start_date.nil? && !self.end_date.nil?
-      if Booking.where('start_date >= ? AND end_date <= ? AND rental_id = ?', self.start_date, self.end_date, self.rental_id).count > 0
+      # if Booking.where('start_date >= ? AND end_date <= ? AND rental_id = ?', self.start_date, self.end_date, self.rental_id).count > 0
+      #   self.errors.add(:start_date, "date overlapping")
+      # end
+      if Booking.where('? BETWEEN start_date and end_date OR ? between start_date and end_date', self.start_date.beginning_of_day, self.end_date.end_of_day).count > 0
         self.errors.add(:start_date, "date overlapping")
       end
     end

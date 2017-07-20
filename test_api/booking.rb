@@ -36,6 +36,7 @@ class Booking
   end
 
   def self.update_test
+    index_test
     puts "Enter id for updating booking"
     id = gets.to_i
     response = HTTParty.put("#{API}/#{id}?api_key=#{KEY}", :body =>{
@@ -48,7 +49,8 @@ class Booking
     puts response["message"] if response["status"] == 500 || response["status"] == 404
   end
 
-  def delete_test
+  def self.delete_test
+    index_test
     puts "Enter id for destroy booking"
     id = gets.to_i
 
@@ -59,6 +61,7 @@ class Booking
   end
 
   def self.show_test
+    index_test
     puts "Enter id for find booking"
     id = gets.to_i
     response = HTTParty.get("#{API}/#{id}?api_key=#{KEY}")
